@@ -1,21 +1,12 @@
 
-import just.cross_memory;
-import just.dyn_place;
-import just.agent_exception;
+#if 1
 import just.enum_info;
-import <iostream>;
-import <typeinfo>;
-import <typeindex>;
-//import just.flags;
-//import <string_view>;
-//import <array>;
-//import <algorithm>;
 
-using namespace just::literals_static_text;
+//using namespace just::literals_static_text;
 
 enum class t_align_horz { n_left, n_center, n_right };
 
-struct nest_where
+struct nest_align_horz
 {
   using enum_type = t_align_horz;
   using nest = just::nest_enum_info<enum_type, just::t_text>;
@@ -29,20 +20,37 @@ struct nest_where
     s_info{};
 };
 
+int main()
+{ return 0; }
+#endif
+
 //
+
+#if 0
+
+import just.cross_memory;
+import just.dyn_place;
+import just.agent_exception;
+import <iostream>;
+//import just.flags;
+//import <typeinfo>;
+//import <typeindex>;
+//import <string_view>;
+//import <array>;
+//import <algorithm>;
 
 std::ostream & operator << (std::ostream & o, const just::t_source & s)
 {
   o
-  << '[' << s.line()
-  << ':' << s.column()
-  << "] " << s.file_name()
-  << " ~ " << s.function_name();
+    << '[' << s.line()
+    << ':' << s.column()
+    << "] " << s.file_name()
+    << " ~ " << s.function_name();
   return o;
 }
 
 const just::nest_cross_memory::t_global
-  g_just_cross_object{};
+g_just_cross_object{};
 
 int main() {
   try {
@@ -65,7 +73,7 @@ int main() {
   using namespace just::literals_static_text;
   just::t_static_text vt{"hello"_st};
   std::cout << typeid(decltype(vt)::size_type).name() << '\n';
-  #if 0
+#if 0
   bool b;
   t_tpl< just::g_flags<t_omg::none>(t_omg::last) > vt;
   t_tpl< just::g_make_flags(t_omg::last) > vt2;
@@ -78,6 +86,8 @@ int main() {
   std::cout << "done\n" << sizeof(just::t_index);
   std::cin >> b;
   //using namespace std::literals::string_view_literals;
-  #endif
+#endif
   return 0;
 }
+
+#endif
