@@ -3,18 +3,13 @@ import just.cross_memory;
 import just.dyn_place;
 import just.agent_exception;
 import just.enum_info;
-//import just.flags;
 import <iostream>;
 import <typeinfo>;
 import <typeindex>;
+//import just.flags;
 //import <string_view>;
 //import <array>;
 //import <algorithm>;
-
-const just::nest_cross_memory::t_global
-  g_just_cross_object{};
-
-//using namespace std::literals::string_view_literals;
 
 using namespace just::literals_static_text;
 
@@ -34,6 +29,8 @@ struct nest_where
     s_info{};
 };
 
+//
+
 std::ostream & operator << (std::ostream & o, const just::t_source & s)
 {
   o
@@ -43,6 +40,9 @@ std::ostream & operator << (std::ostream & o, const just::t_source & s)
   << " ~ " << s.function_name();
   return o;
 }
+
+const just::nest_cross_memory::t_global
+  g_just_cross_object{};
 
 int main() {
   try {
@@ -63,10 +63,9 @@ int main() {
     std::cout << "catch ...\n";
   }
   using namespace just::literals_static_text;
-  //just::t_index_text
   just::t_static_text vt{"hello"_st};
   std::cout << typeid(decltype(vt)::size_type).name() << '\n';
-  /*
+  #if 0
   bool b;
   t_tpl< just::g_flags<t_omg::none>(t_omg::last) > vt;
   t_tpl< just::g_make_flags(t_omg::last) > vt2;
@@ -77,6 +76,8 @@ int main() {
     std::cout << "catch\n";
   }
   std::cout << "done\n" << sizeof(just::t_index);
-  std::cin >> b;*/
+  std::cin >> b;
+  //using namespace std::literals::string_view_literals;
+  #endif
   return 0;
 }
