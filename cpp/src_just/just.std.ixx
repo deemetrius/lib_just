@@ -14,11 +14,11 @@ export namespace just {
   using t_size = std::size_t;
   using t_index = std::ptrdiff_t;
 
-  using t_align = std::align_val_t;
-  using t_align_of = std::underlying_type_t<t_align>;
-
   using t_int = std::intptr_t;
   using t_byte = std::uint8_t;
+
+  using t_align = std::align_val_t;
+  using t_align_of = std::underlying_type_t<t_align>;
 
   using t_source = std::source_location;
 

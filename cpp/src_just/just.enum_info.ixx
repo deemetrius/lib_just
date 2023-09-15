@@ -36,14 +36,28 @@ export namespace just {
 
       void add_from(value_type p_value, target_type p_target, projection_type proj = {})
       { m_from.try_emplace(proj(p_target), p_value); }
+
+      template <typename Behavior = t_behavior_default>
+      target_type to_target(value_type value, Behavior && behavior = {}) const
+      {
+        typename type_to_target::const_iterator it = m_to.find(value);
+        return (it == m_to.end()) ? behavior( m_from.begin() )->first : it->second;
+      }
+
+      template <typename Behavior = t_behavior_default>
+      value_type to_value(target_type target, Behavior && behavior = {}) const
+      {
+        typename type_from_target::const_iterator it = m_from.find(target);
+        return (it == m_from.end()) ? behavior( m_to.begin() )->first : it->second;
+      }
     };
-  };
+  }; // nest_conversion_map
 
   template <
     typename Enum,
     typename Text,
     typename Projection = std::identity,
-    typename Conversion_nest = nest_conversion_map
+    typename Storage_nest = nest_conversion_map
   >
   struct nest_enum_info
   {
@@ -51,11 +65,22 @@ export namespace just {
 
     using value_type = Enum;
     using text_type = Text;
+    using text_view_type = std::basic_string_view<typename text_type::value_type>;
 
     using projection_type = Projection;
-    using storage_type = Conversion_nest::template tpl<value_type, text_type, projection_type>;
+    using storage_type = Storage_nest::template tpl<value_type, text_type, projection_type>;
+
+    struct t_item
+    {
+      // data
+      value_type
+        value;
+      text_type
+        name;
+    };
 
     template <t_static_text ... Names>
+      requires( sizeof...(Names) > 0 )
     struct t_alias
     {
       static void add(storage_type & storage, value_type value, projection_type proj = {})
@@ -64,17 +89,21 @@ export namespace just {
       }
     };
 
-    template <value_type V, t_static_text Name, typename Alias>
+    template <value_type Value, t_static_text Name, typename Alias>
     struct t_element
     {
+      //static inline const t_item
+      //  s_item{ Value, {Name.data, Name.size} };
+
       static void add(storage_type & storage, projection_type proj)
       {
-        storage.add_to(V, Name.data);
-        Alias::add(storage, V, proj);
+        storage.add_to(Value, {Name.data, Name.size});
+        Alias::add(storage, Value, proj);
       }
     };
 
     template <typename ... Items>
+      requires( sizeof...(Items) > 0 )
     struct t_info
     {
       // data
@@ -85,7 +114,17 @@ export namespace just {
       {
         ( Items::add(this->storage, proj), ... );
       }
+
+      t_pointer<storage_type> operator -> ()
+      { return &storage; }
     };
+  }; // nest_enum_info
+
+  struct t_behavior_default
+  {
+    template <typename Iterator>
+    Iterator operator () (Iterator it) const
+    { return it; }
   };
 
 } // ns
