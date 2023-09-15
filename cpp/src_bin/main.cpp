@@ -1,6 +1,7 @@
 
-#if 1
+#if 0
 import just.enum_info;
+import <iostream>;
 
 //using namespace just::literals_static_text;
 
@@ -21,7 +22,29 @@ struct nest_align_horz
 };
 
 int main()
-{ return 0; }
+{
+  std::cout
+    << nest_align_horz::s_info->to_target(t_align_horz::n_left) << '\n'
+    << std::to_underlying( nest_align_horz::s_info->to_value("align-left") ) << '\n'
+  ;
+  return 0;
+}
+#endif
+
+//
+
+#if 1
+
+import just.static_text;
+import <iostream>;
+
+int main()
+{
+  constexpr static just::t_static_text res{just::static_implode<"1", "22", "333">()};
+  std::cout << res.data << '\n';
+  return 0;
+}
+
 #endif
 
 //
