@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="..\src_bin\main.cpp" />
     <ClCompile Include="..\src_just\just.agent_exception.ixx" />
+    <ClCompile Include="..\src_just\just.array.ixx" />
     <ClCompile Include="..\src_just\just.dyn_place.ixx" />
     <ClCompile Include="..\src_just\just.enum_info.ixx" />
     <ClCompile Include="..\src_just\just.errors.ixx" />

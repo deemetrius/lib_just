@@ -42,5 +42,8 @@
     <ClCompile Include="..\src_just\just.enum_info.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src_just\just.array.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
