@@ -40,8 +40,12 @@ import <iostream>;
 
 int main()
 {
-  constexpr static just::t_static_text res{just::static_implode<"1", "22", "333">()};
-  std::cout << res.data << '\n';
+  constexpr static just::t_static_text
+    res1{just::static_implode<"1", "22", "333">()};
+  constexpr static just::t_static_text
+    res2{just::static_implode_separated<":", "1", "22", "333">()};
+  std::cout << res1.data << ' ' << res1.length << '\n';
+  std::cout << res2.data << ' ' << res2.length << '\n';
   return 0;
 }
 
