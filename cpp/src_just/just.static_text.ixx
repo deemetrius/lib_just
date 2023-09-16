@@ -17,6 +17,9 @@ export namespace just {
     using typename base_type::size_type;
     using view_type = std::basic_string_view<T>;
 
+    static constexpr inline const size_type
+      length{N - 1};
+
     constexpr
       t_static_text(source_type p_str)
     {
@@ -46,25 +49,78 @@ export namespace just {
     return to_position - 1;
   }
 
-  template <t_static_text First, t_static_text ... Rest>
-  constexpr inline t_index
-    g_static_implode_size = First.size + (Rest.size + ...) - sizeof...(Rest);
+  //
 
-  template <t_static_text First, t_static_text ... Rest>
+  template <
+    t_static_text First,
+    t_static_text ... Rest
+  >
+  constexpr inline t_index
+    g_static_implode_size{ First.length + (Rest.length + ...) + 1 };
+
+  template <
+    t_static_text First,
+    t_static_text ... Rest
+  >
   using t_static_implode_result = t_static_text<
     typename decltype(First)::value_type,
     g_static_implode_size<First, Rest ...>
   >;
 
-  template <t_static_text First, t_static_text ... Rest>
+  template <
+    t_static_text First,
+    t_static_text ... Rest
+  >
   constexpr t_static_implode_result<First, Rest ...>
     static_implode()
   {
     t_static_implode_result<First, Rest ...> ret;
     t_index pos{copy_st<First>(ret.data, 0)};
-    ( (pos = copy_st<Rest>(ret.data, pos)), ... );
+    ( (
+      pos = copy_st<Rest>(ret.data, pos)
+    ), ... );
     return ret;
   }
+
+  //
+
+  template <
+    t_static_text Separator,
+    t_static_text First,
+    t_static_text ... Rest
+  >
+  constexpr inline t_index
+    g_static_implode_separated_size
+  { First.length + (Rest.length + ...) + 1 + Separator.length * sizeof...(Rest) };
+
+  template <
+    t_static_text Separator,
+    t_static_text First,
+    t_static_text ... Rest
+  >
+  using t_static_implode_separated_result = t_static_text<
+    typename decltype(First)::value_type,
+    g_static_implode_separated_size<Separator, First, Rest ...>
+  >;
+
+  template <
+    t_static_text Separator,
+    t_static_text First,
+    t_static_text ... Rest
+  >
+  constexpr t_static_implode_separated_result<Separator, First, Rest ...>
+    static_implode_separated()
+  {
+    t_static_implode_separated_result<Separator, First, Rest ...> ret;
+    t_index pos{copy_st<First>(ret.data, 0)};
+    ( (
+      ( pos = copy_st<Separator>(ret.data, pos) ),
+      ( pos = copy_st<Rest>(ret.data, pos) )
+    ), ... );
+    return ret;
+  }
+
+  //
 
   namespace literals_static_text {
   
