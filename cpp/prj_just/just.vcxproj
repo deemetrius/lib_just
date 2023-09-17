@@ -14,11 +14,13 @@
     <ClCompile Include="..\src_bin\main.cpp" />
     <ClCompile Include="..\src_just\just.agent_exception.ixx" />
     <ClCompile Include="..\src_just\just.array.ixx" />
+    <ClCompile Include="..\src_just\just.compare.ixx" />
     <ClCompile Include="..\src_just\just.dyn_place.ixx" />
     <ClCompile Include="..\src_just\just.enum_info.ixx" />
     <ClCompile Include="..\src_just\just.errors.ixx" />
     <ClCompile Include="..\src_just\just.flags.ixx" />
     <ClCompile Include="..\src_just\just.cross_memory.ixx" />
+    <ClCompile Include="..\src_just\just.span.ixx" />
     <ClCompile Include="..\src_just\just.static_text.ixx" />
     <ClCompile Include="..\src_just\just.std.ixx" />
   </ItemGroup>
@@ -91,7 +93,7 @@
       <EnableModules>true</EnableModules>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <ScanSourceForModuleDependencies>true</ScanSourceForModuleDependencies>
-      <DisableLanguageExtensions>true</DisableLanguageExtensions>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
       <ExceptionHandling>Sync</ExceptionHandling>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>false</MinimalRebuild>

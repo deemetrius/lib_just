@@ -24,72 +24,88 @@ export namespace just {
 
   using t_text = std::string;
 
-  //
+  // conversion of types
 
-  enum class t_direction : t_byte { forward, reverse };
+  template <typename Result>
+  struct t_cast;
+
+  // operator >
+  template <typename From, typename Result>
+  constexpr Result
+    operator > (From p_from, const t_cast<Result> p_cast)
+  { return p_cast(p_from); }
+
+  // global template object
+  template <typename Result>
+  constexpr inline t_cast<Result>
+    as_type{};
+
+  // iteration
+
+  enum class t_direction : t_byte { n_forward, n_reverse };
 
   struct t_sentinel {};
 
-  //
+  // type traits
 
-  template <typename T>
+  template <typename Type>
   struct is_simple : public std::bool_constant<
-    not (std::is_reference_v<T> or std::is_unbounded_array_v<T> or std::is_function_v<T>)
+    not (std::is_reference_v<Type> or std::is_unbounded_array_v<Type> or std::is_function_v<Type>)
   > {};
 
-  template <typename T>
-  inline constexpr bool is_simple_v = is_simple<T>::value;
+  template <typename Type>
+  inline constexpr bool is_simple_v = is_simple<Type>::value;
 
   // concepts
 
-  template <typename T>
-  concept c_scalar = std::is_scalar_v<T>;
+  template <typename Type>
+  concept c_scalar = std::is_scalar_v<Type>;
 
-  template <typename T>
-  concept c_not_ref = not std::is_reference_v<T>;
+  template <typename Type>
+  concept c_not_ref = not std::is_reference_v<Type>;
 
-  template <typename T, typename U>
-  concept c_same_type = std::is_same_v<T, U>;
+  template <typename Type, typename U>
+  concept c_same_type = std::is_same_v<Type, U>;
 
-  template <typename T, typename ... U>
-  concept c_any_of = (std::is_same_v<T, U> || ...);
+  template <typename Type, typename ... U>
+  concept c_any_of = (std::is_same_v<Type, U> || ...);
 
-  template <typename T>
-  concept c_allocatable = is_simple_v<T> and (not std::is_abstract_v<T>);
+  template <typename Type>
+  concept c_allocatable = is_simple_v<Type> and (not std::is_abstract_v<Type>);
 
   //
 
-  template <c_allocatable T>
+  template <c_allocatable Type>
   constexpr inline t_size
     entire_size(t_index p_count)
   {
-    return sizeof(T) * static_cast<t_size>(p_count);
+    return sizeof(Type) * static_cast<t_size>(p_count);
   }
 
   //
 
-  template <typename T>
-  using t_pointer = T *;
+  template <typename Type>
+  using t_pointer = Type *;
 
-  template <c_not_ref T>
-  using t_reference = T &;
+  template <c_not_ref Type>
+  using t_reference = Type &;
 
-  template <c_not_ref T>
-  using t_right_ref = T &&;
+  template <c_not_ref Type>
+  using t_right_ref = Type &&;
 
   //
 
   template <typename Value, typename Status>
   struct t_result
   {
-    using t_value = Value;
-    using t_status = Status;
+    using value_type = Value;
+    using status_type = Status;
 
     // data
-    t_value
+    value_type
       value{};
     [[no_unique_address]]
-    t_status
+    status_type
       status{};
   };
 

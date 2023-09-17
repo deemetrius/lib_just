@@ -8,10 +8,6 @@ export import <typeinfo>;
 
 export namespace just {
 
-  //using namespace std::string_literals;
-
-  //
-
   struct t_error
   {
     // data
@@ -56,9 +52,9 @@ export namespace just {
       name{};
   };
 
-  template <typename T>
+  template <typename Type>
   const t_type_info
-    g_type_info{alignof(T), sizeof(T), typeid(T).name()};
+    g_type_info{alignof(Type), sizeof(Type), typeid(Type).name()};
 
   struct t_error_allocate
     : public t_error
@@ -70,13 +66,13 @@ export namespace just {
     t_index
       count{};
 
-    template <typename T>
+    template <typename Type>
     t_error_allocate(
-      std::in_place_type_t<T> p_type,
+      std::in_place_type_t<Type> p_type,
       t_index p_count = 1,
       t_source p_source = t_source::current()
     )
-      : target_type{& g_type_info<T>}
+      : target_type{& g_type_info<Type>}
       , count{p_count}
       , t_error{p_source}
     {}

@@ -9,13 +9,13 @@ export namespace just {
 
   struct nest_cross_memory
   {
-    ~nest_cross_memory() = delete; // nest
+    ~nest_cross_memory() = delete; // only nest
 
   private:
 
     struct nest_hidden
     {
-      ~nest_hidden() = delete; // nest
+      ~nest_hidden() = delete; // only nest
 
       enum class t_status : bool { n_ready = false, n_unready = true };
 
@@ -59,7 +59,7 @@ export namespace just {
         s_core = & nest_hidden::s_core_unready;
     }; // nest_hidden
   
-    template <typename T, typename Agent>
+    template <typename Type, typename Agent>
     static void
       validate(
         t_reference<const nest_hidden::t_ret> p_ret,
@@ -72,7 +72,7 @@ export namespace just {
       {
         if( p_ret.status == nest_hidden::t_status::n_unready )
         { p_agent(std::in_place_type<t_error_unready>, p_source); }
-        p_agent(std::in_place_type<t_error_allocate>, std::in_place_type<T>, p_count, p_source);
+        p_agent(std::in_place_type<t_error_allocate>, std::in_place_type<Type>, p_count, p_source);
       }
     }
 
@@ -80,61 +80,61 @@ export namespace just {
 
     // single
 
-    template <c_allocatable T>
-    static t_pointer<T>
+    template <c_allocatable Type>
+    static t_pointer<Type>
       allocate_single() noexcept
     {
       nest_hidden::t_ret v_result = nest_hidden::s_core->m_allocate(
-        sizeof(T), t_align{alignof(T)}
+        sizeof(Type), t_align{alignof(Type)}
       );
-      return static_cast< t_pointer<T> >(v_result.value);
+      return static_cast< t_pointer<Type> >(v_result.value);
     }
 
     // single validated
 
-    template <c_allocatable T, typename Agent>
-    static t_pointer<T>
+    template <c_allocatable Type, typename Agent>
+    static t_pointer<Type>
       allocate_single(Agent && p_agent, const t_source p_source)
     {
       nest_hidden::t_ret ret = nest_hidden::s_core->m_allocate(
-        sizeof(T), t_align{alignof(T)}
+        sizeof(Type), t_align{alignof(Type)}
       );
-      validate<T>(ret, 1, p_agent, p_source);
-      return static_cast< t_pointer<T> >(ret.value);
+      validate<Type>(ret, 1, p_agent, p_source);
+      return static_cast< t_pointer<Type> >(ret.value);
     }
 
     // multiple
 
-    template <c_allocatable T>
-    static t_pointer<T>
+    template <c_allocatable Type>
+    static t_pointer<Type>
       allocate_multiple(t_index p_count) noexcept
     {
       nest_hidden::t_ret v_result = nest_hidden::s_core->m_allocate(
-        entire_size<T>(p_count), t_align{alignof(T)}
+        entire_size<Type>(p_count), t_align{alignof(Type)}
       );
-      return static_cast< t_pointer<T> >(v_result.value);
+      return static_cast< t_pointer<Type> >(v_result.value);
     }
 
     // multiple validated
 
-    template <c_allocatable T, typename Agent>
-    static t_pointer<T>
+    template <c_allocatable Type, typename Agent>
+    static t_pointer<Type>
       allocate_multiple(t_index p_count, Agent && p_agent, const t_source p_source)
     {
       nest_hidden::t_ret ret = nest_hidden::s_core->m_allocate(
-        entire_size<T>(p_count), t_align{alignof(T)}
+        entire_size<Type>(p_count), t_align{alignof(Type)}
       );
-      validate<T>(ret, p_count, p_agent, p_source);
-      return static_cast< t_pointer<T> >(ret.value);
+      validate<Type>(ret, p_count, p_agent, p_source);
+      return static_cast< t_pointer<Type> >(ret.value);
     }
 
     // close
 
-    template <c_allocatable T>
+    template <c_allocatable Type>
     static void
-      deallocate(t_pointer<T> p_handle) noexcept
+      deallocate(t_pointer<Type> p_handle) noexcept
     {
-      nest_hidden::s_core->m_deallocate(p_handle, t_align{alignof(T)});
+      nest_hidden::s_core->m_deallocate(p_handle, t_align{alignof(Type)});
     }
 
   public:

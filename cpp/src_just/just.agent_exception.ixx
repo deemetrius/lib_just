@@ -1,5 +1,5 @@
 
-export module just.agent_exception;
+export module just.t_agent_exception;
 
 export import <utility>;
 
@@ -7,11 +7,11 @@ export namespace just {
 
 #ifdef __cpp_exceptions
 
-  struct agent_exception
+  struct t_agent_exception
   {
-    template <typename T, typename ... Args>
-    void operator () (std::in_place_type_t<T>, Args ... p_args) const
-    { throw T{p_args ...}; }
+    template <typename Type, typename ... Args>
+    void operator () (std::in_place_type_t<Type>, Args ... p_args) const
+    { throw Type{p_args ...}; }
   };
 
 #endif

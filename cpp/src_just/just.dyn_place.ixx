@@ -8,25 +8,25 @@ export namespace just {
 
   // dynamic space nest
 
-  template <typename Memory, bool Leak = false>
+  template <typename Memory_nest, bool Leak = false>
   struct nest_dynamic_space
     final
-    : protected Memory
+    : protected Memory_nest
   {
     ~nest_dynamic_space() = delete; // nest
 
-    using memory_type = Memory;
+    using memory_type = Memory_nest;
 
     static constexpr inline bool
       s_leak{Leak};
 
     // single space
 
-    template <c_allocatable T>
+    template <c_allocatable Type>
     struct t_single
       final
     {
-      using value_type = T;
+      using value_type = Type;
       using pointer = t_pointer<value_type>;
       using reference = t_reference<value_type>;
 
@@ -93,12 +93,12 @@ export namespace just {
 
     // fixed size space
 
-    template <c_allocatable T, t_index N>
+    template <c_allocatable Type, t_index N>
       requires( N > 0 )
-    struct t_fixed
+    struct t_multiple_exact
       final
     {
-      using value_type = T;
+      using value_type = Type;
       using pointer = t_pointer<value_type>;
       using reference = t_reference<value_type>;
       using size_type = decltype(N);
@@ -116,23 +116,23 @@ export namespace just {
       pointer
         m_handle;
 
-      using t_self = t_fixed;
+      using t_self = t_multiple_exact;
 
     public:
 
-      ~t_fixed() noexcept
+      ~t_multiple_exact() noexcept
         requires( not s_leak )
       { reset(); }
 
-      t_fixed(t_reference<const t_self>) = delete; // no copy
+      t_multiple_exact(t_reference<const t_self>) = delete; // no copy
       t_reference<t_self> operator = (t_reference<const t_self>) = delete; // no copy assign
 
-      t_fixed()
+      t_multiple_exact()
         : m_handle{memory_type::template allocate_multiple<value_type>(s_count)}
       {}
 
       template <typename Agent>
-      t_fixed(
+      t_multiple_exact(
         Agent && p_agent,
         const t_source p_source = t_source::current()
       )
@@ -142,7 +142,7 @@ export namespace just {
       {}
 
       // move
-      t_fixed(t_right_ref<t_self> p_other) noexcept :
+      t_multiple_exact(t_right_ref<t_self> p_other) noexcept :
         m_handle{ std::exchange(p_other.m_handle, nullptr) }
       {}
 
@@ -167,15 +167,15 @@ export namespace just {
         operator [] (size_type p_index) const
       { return m_handle[p_index]; }
 
-    }; // t_fixed
+    }; // t_multiple_exact
 
     // any sized space
 
-    template <c_allocatable T>
+    template <c_allocatable Type>
     struct t_multiple
       final
     {
-      using value_type = T;
+      using value_type = Type;
       using pointer = t_pointer<value_type>;
       using reference = t_reference<value_type>;
       using size_type = t_index;
@@ -259,7 +259,7 @@ export namespace just {
 
   }; // t_cross_dyn_place
 
-  /*
+#if 0
   template <t_direction Direction>
   struct t_iterator
   {
@@ -288,7 +288,7 @@ export namespace just {
     t_reference<t_iterator>
       operator ++ ()
     {
-      if constexpr( s_direction == t_direction::forward )
+      if constexpr( s_direction == t_direction::n_forward )
       { ++m_current; } else { --m_current; }
       return *this;
     }
@@ -296,7 +296,7 @@ export namespace just {
     t_reference<t_iterator>
       operator -- ()
     {
-      if constexpr( s_direction == t_direction::forward )
+      if constexpr( s_direction == t_direction::n_forward )
       { --m_current; } else { ++m_current; }
       return *this;
     }
@@ -304,7 +304,7 @@ export namespace just {
     t_reference<t_iterator>
       operator += (difference_type p_delta)
     {
-      if constexpr( s_direction == t_direction::forward )
+      if constexpr( s_direction == t_direction::n_forward )
       { m_current += p_delta; } else { m_current -= p_delta; }
       return *this;
     }
@@ -312,7 +312,7 @@ export namespace just {
     t_reference<t_iterator>
       operator -= (difference_type p_delta)
     {
-      if constexpr( s_direction == t_direction::forward )
+      if constexpr( s_direction == t_direction::n_forward )
       { m_current -= p_delta; } else { m_current += p_delta; }
       return *this;
     }
@@ -320,7 +320,7 @@ export namespace just {
     friend t_iterator
       operator + (t_reference<const t_iterator> p, difference_type p_delta)
     {
-      if constexpr( s_direction == t_direction::forward )
+      if constexpr( s_direction == t_direction::n_forward )
       { return {p.m_current + p_delta, p.m_end}; } else
       { return {p.m_current - p_delta, p.m_end}; }
     }
@@ -328,7 +328,7 @@ export namespace just {
     friend t_iterator
       operator - (t_reference<const t_iterator> p, difference_type p_delta)
     {
-      if constexpr( s_direction == t_direction::forward )
+      if constexpr( s_direction == t_direction::n_forward )
       { return {p.m_current - p_delta, p.m_end}; } else
       { return {p.m_current + p_delta, p.m_end}; }
     }
@@ -350,7 +350,7 @@ export namespace just {
         t_reference<const t_iterator> p2
       )
     {
-      if constexpr( s_direction == t_direction::forward )
+      if constexpr( s_direction == t_direction::n_forward )
       { return p1.m_current <=> p2.m_current; } else
       { return p2.m_current <=> p1.m_current; }
     }
@@ -358,14 +358,14 @@ export namespace just {
     friend std::strong_ordering
       operator <=> (t_reference<const t_iterator> p, sentinel_type)
     {
-      if constexpr( s_direction == t_direction::forward )
+      if constexpr( s_direction == t_direction::n_forward )
       { return p.m_current <=> p.m_end; } else
       { return p.m_end <=> p.m_current; }
     }
   };
 
-  using iterator = t_iterator<t_direction::forward>;
-  using reverse_iterator = t_iterator<t_direction::reverse>;
+  using iterator = t_iterator<t_direction::n_forward>;
+  using reverse_iterator = t_iterator<t_direction::n_reverse>;
 
   iterator
     begin()
@@ -374,6 +374,6 @@ export namespace just {
   sentinel_type
     end()
   { return {}; }
-  */
+#endif
 
 } // ns

@@ -5,15 +5,15 @@ export import just.std;
 
 export namespace just {
 
-  template <typename T, t_index N>
-    requires( N > 0 )
+  template <typename Type, t_index Size>
+    requires( Size > 0 )
   struct t_array
   {
-    using value_type = T;
-    using size_type = decltype(N);
+    using value_type = Type;
+    using size_type = decltype(Size);
 
     static constexpr inline const size_type
-      size{N};
+      size{Size};
 
     // data
     value_type

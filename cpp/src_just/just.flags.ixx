@@ -11,91 +11,91 @@ import <compare>;
 
 export namespace just {
 
-  template <typename T>
-  concept c_flag_enum = std::is_scoped_enum_v<T>;
+  template <typename Type>
+  concept c_flag_enum = std::is_scoped_enum_v<Type>;
 
-  template <c_flag_enum T>
+  template <c_flag_enum Type>
   struct t_flags
   {
-    using t_enum = T;
-    using t_underlying = std::underlying_type_t<t_enum>;
-    using t_value = t_size; //std::make_unsigned_t<t_underlying>;
-    using t_limits = std::numeric_limits<t_value>;
+    using enum_type = Type;
+    using underlying_type = std::underlying_type_t<enum_type>;
+    using value_type = t_size; //std::make_unsigned_t<underlying_type>;
+    using limits_type = std::numeric_limits<value_type>;
 
     static constexpr inline const bool
-      s_signed_hint = std::is_signed_v<t_underlying>;
+      s_signed_hint = std::is_signed_v<underlying_type>;
 
-    static constexpr inline const t_value
+    static constexpr inline const value_type
       s_zero{0},
       s_one{1};
 
-    static constexpr inline const t_underlying
-      s_bits{ static_cast<t_underlying>(t_limits::digits) },
-      s_hint_bits{ static_cast<t_underlying>(
-        s_signed_hint ? (- t_limits::digits) : 0
+    static constexpr inline const underlying_type
+      s_bits{ static_cast<underlying_type>(limits_type::digits) },
+      s_hint_bits{ static_cast<underlying_type>(
+        s_signed_hint ? (- limits_type::digits) : 0
       ) };
 
     // static actions
 
-    static constexpr t_value
-      as_value(t_enum p)
+    static constexpr value_type
+      as_value(enum_type p)
     {
       if constexpr( s_signed_hint )
       {
-        t_underlying ret{ std::to_underlying(p) };
+        underlying_type ret{ std::to_underlying(p) };
         if( ret < 0 )
         {
           if( ret < s_hint_bits )
           { throw t_error_range{}; }
-          return static_cast<t_value>(s_bits + ret);
+          return static_cast<value_type>(s_bits + ret);
         }
         if( ret >= s_bits )
         { throw t_error_range{}; }
-        return static_cast<t_value>(ret);
+        return static_cast<value_type>(ret);
       } else {
-        t_value ret{std::to_underlying(p)};
+        value_type ret{std::to_underlying(p)};
         if( ret >= s_bits )
         { throw t_error_range{}; }
         return ret;
       }
     }
 
-    static constexpr t_value
-      as_flag(t_enum p)
+    static constexpr value_type
+      as_flag(enum_type p)
     { return s_one << as_value(p); }
 
-    template <c_same_type<t_enum> ... E>
-    static constexpr t_value
+    template <c_same_type<enum_type> ... E>
+    static constexpr value_type
       mix(E ... p)
     { return ( s_zero | ... | as_flag(p) ); }
 
     // data
-    t_value
+    value_type
       value = 0;
 
     // check actions
 
-    template <c_same_type<t_enum> ... E>
+    template <c_same_type<enum_type> ... E>
     constexpr bool
-      has_all(t_enum p_first, E ... p_rest) const
+      has_all(enum_type p_first, E ... p_rest) const
     {
-      t_value v{mix(p_first, p_rest ...)};
+      value_type v{mix(p_first, p_rest ...)};
       return (value & v) == v;
     }
 
-    template <c_same_type<t_enum> ... E>
+    template <c_same_type<enum_type> ... E>
     constexpr bool
-      has_any(t_enum p_first, E ... p_rest) const
+      has_any(enum_type p_first, E ... p_rest) const
     {
-      t_value v{mix(p_first, p_rest ...)};
+      value_type v{mix(p_first, p_rest ...)};
       return (value & v) != s_zero;
     }
 
-    template <c_same_type<t_enum> ... E>
+    template <c_same_type<enum_type> ... E>
     constexpr bool
-      has_none(t_enum p_first, E ... p_rest) const
+      has_none(enum_type p_first, E ... p_rest) const
     {
-      t_value v{mix(p_first, p_rest ...)};
+      value_type v{mix(p_first, p_rest ...)};
       return (value & v) == s_zero;
     }
 
@@ -105,19 +105,19 @@ export namespace just {
 
     // change actions
 
-    template <c_same_type<t_enum> ... E>
+    template <c_same_type<enum_type> ... E>
     constexpr void
-      set(t_enum p_first, E ... p_rest)
+      set(enum_type p_first, E ... p_rest)
     {
-      t_value v{mix(p_first, p_rest ...)};
+      value_type v{mix(p_first, p_rest ...)};
       value |= v;
     }
 
-    template <c_same_type<t_enum> ... E>
+    template <c_same_type<enum_type> ... E>
     constexpr void
-      unset(t_enum p_first, E ... p_rest)
+      unset(enum_type p_first, E ... p_rest)
     {
-      t_value v{mix(p_first, p_rest ...)};
+      value_type v{mix(p_first, p_rest ...)};
       value &= compl v;
     }
 
@@ -127,9 +127,9 @@ export namespace just {
 
     //
 
-    template <c_same_type<t_enum> ... E>
+    template <c_same_type<enum_type> ... E>
     constexpr t_flags
-      operator () (t_enum p_first, E ... p_rest) const
+      operator () (enum_type p_first, E ... p_rest) const
     { return {value | mix(p_first, p_rest ...)}; }
 
     // bitwise assign
@@ -187,15 +187,15 @@ export namespace just {
 
     struct t_make_flags
     {
-      template <c_flag_enum T>
+      template <c_flag_enum Type>
       constexpr inline
-        operator t_flags<T> () const
-      { return t_flags<T>{}; }
+        operator t_flags<Type> () const
+      { return t_flags<Type>{}; }
 
-      template <c_flag_enum T, c_same_type<T> ... E>
-      constexpr t_flags<T>
-        operator () (T p_first, E ... p_rest) const
-      { return {t_flags<T>::mix(p_first, p_rest ...)}; }
+      template <c_flag_enum Type, c_same_type<Type> ... E>
+      constexpr t_flags<Type>
+        operator () (Type p_first, E ... p_rest) const
+      { return {t_flags<Type>::mix(p_first, p_rest ...)}; }
     };
 
   } // ns
