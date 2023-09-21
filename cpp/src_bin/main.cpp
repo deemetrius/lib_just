@@ -1,5 +1,5 @@
 
-#if 0
+#if 1
 import just.enum_info;
 import <iostream>;
 
@@ -23,7 +23,10 @@ struct nest_align_horz
 
 int main()
 {
+  using namespace just::literals_static_text;
+  static constexpr bool b{ "123"_st.span() == "123"_st.span()};
   std::cout
+    << b << '\n'
     << nest_align_horz::s_info->to_target(t_align_horz::n_left) << '\n'
     << std::to_underlying( nest_align_horz::s_info->to_value("align-left") ) << '\n'
   ;
@@ -53,7 +56,7 @@ int main()
 
 //
 
-#if 1
+#if 0
 
 import just.compare;
 import just.std;
@@ -109,8 +112,8 @@ int main()
   //bool r1 = go1(v1, v2);
   //bool r2 = go2(v1, v2);
   just::t_compare
-    v{1.0 <=> 0.0 > just::as_compare},
-    w{1.0/0.0 <=> 1.0/0.0 > just::as_compare};
+    v{1.0 <=> 0.0 | just::as_compare},
+    w{1.0/0.0 <=> 1.0/0.0 | just::as_compare};
   std::cout << std::to_underlying(v) << '\n';
   std::cout << std::to_underlying(w) << '\n';
   std::cout << (v < w) << '\n';

@@ -7,6 +7,22 @@ export import <map>;
 
 export namespace just {
 
+  template <typename Enum, typename Text, typename Aliases>
+  struct t_enum_info
+  {
+    using value_type = Enum;
+    using text_type = Text;
+    using aliases_type = Aliases;
+
+    // data
+    value_type
+      value;
+    text_type
+      name;
+    aliases_type
+      aliases;
+  };
+
   struct nest_conversion_map
   {
     ~nest_conversion_map() = delete; // only nest

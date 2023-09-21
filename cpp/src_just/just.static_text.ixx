@@ -2,12 +2,13 @@
 export module just.static_text;
 
 export import just.array;
+export import just.span;
 export import <string_view>;
 
 export namespace just {
 
   // t_static_text
-  template <typename Type, t_index N>
+  template <c_not_ref Type, t_index N>
     requires( N > 0 )
   struct t_static_text
     : public t_array<Type, N>
@@ -32,7 +33,11 @@ export namespace just {
 
     constexpr view_type
       sv() const
-    { return {this->data, N}; }
+    { return {this->data, length}; }
+
+    constexpr t_span<const value_type>
+      span() const
+    { return {this->data, length}; }
   };
 
 #if 0 && __cplusplus < 202002L

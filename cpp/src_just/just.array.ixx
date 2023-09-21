@@ -5,7 +5,7 @@ export import just.std;
 
 export namespace just {
 
-  template <typename Type, t_index Size>
+  template <c_not_ref Type, t_index Size>
     requires( Size > 0 )
   struct t_array
   {

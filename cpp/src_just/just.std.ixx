@@ -29,10 +29,10 @@ export namespace just {
   template <typename Result>
   struct t_cast;
 
-  // operator >
+  // operator |
   template <typename From, typename Result>
   constexpr Result
-    operator > (From p_from, const t_cast<Result> p_cast)
+    operator | (From p_from, const t_cast<Result> p_cast)
   { return p_cast(p_from); }
 
   // global template object
@@ -75,15 +75,6 @@ export namespace just {
 
   //
 
-  template <c_allocatable Type>
-  constexpr inline t_size
-    entire_size(t_index p_count)
-  {
-    return sizeof(Type) * static_cast<t_size>(p_count);
-  }
-
-  //
-
   template <typename Type>
   using t_pointer = Type *;
 
@@ -92,6 +83,38 @@ export namespace just {
 
   template <c_not_ref Type>
   using t_right_ref = Type &&;
+
+  //
+
+  template <typename Type>
+  concept c_bool_comparable_equal = requires(
+    t_reference< const std::remove_reference_t<Type> > p1,
+    t_reference< const std::remove_reference_t<Type> > p2
+  ) {
+    static_cast<bool>(p1 == p2);
+  };
+
+  template <typename Type>
+  concept c_bool_comparable_not_equal = requires(
+    t_reference< const std::remove_reference_t<Type> > p1,
+    t_reference< const std::remove_reference_t<Type> > p2
+  ) {
+    static_cast<bool>(p1 != p2);
+  };
+
+  template <typename Type>
+  concept c_bool_comparable_equal_both =
+    c_bool_comparable_equal<Type> &&
+    c_bool_comparable_not_equal<Type>;
+
+  //
+
+  template <c_allocatable Type>
+  constexpr inline t_size
+    entire_size(t_index p_count)
+  {
+    return sizeof(Type) * static_cast<t_size>(p_count);
+  }
 
   //
 
@@ -108,5 +131,22 @@ export namespace just {
     status_type
       status{};
   };
+
+  namespace aux {
+
+    // min
+    template <typename First, typename Second, typename ... Rest>
+    constexpr First
+      min(First p_first, Second p_second, Rest ... p_rest)
+    {
+      if constexpr( sizeof...(Rest) == 0 )
+      {
+        return (p_first < p_second ? p_first : p_second);
+      } else {
+        return (p_first < p_second ? p_first : min(p_second, p_rest ...) );
+      }
+    }
+  
+  } // ns aux
 
 } // ns
