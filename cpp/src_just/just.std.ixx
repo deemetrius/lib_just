@@ -86,26 +86,43 @@ export namespace just {
 
   //
 
-  template <typename Type>
-  concept c_bool_comparable_equal = requires(
-    t_reference< const std::remove_reference_t<Type> > p1,
-    t_reference< const std::remove_reference_t<Type> > p2
-  ) {
-    static_cast<bool>(p1 == p2);
-  };
+  template <typename Left, typename Right>
+  concept c_comparable_equal_with = requires(
+    t_reference< const std::remove_reference_t<Left> > p_left,
+    t_reference< const std::remove_reference_t<Right> > p_right
+    )
+  { (p_left == p_right); };
 
   template <typename Type>
-  concept c_bool_comparable_not_equal = requires(
-    t_reference< const std::remove_reference_t<Type> > p1,
-    t_reference< const std::remove_reference_t<Type> > p2
-  ) {
-    static_cast<bool>(p1 != p2);
+  concept c_comparable_equal = c_comparable_equal_with<Type, Type>;
+
+  template <typename Left, typename Right = Left>
+  requires( c_comparable_equal_with<Left, Right> )
+  using u_result_of_compare_equal = decltype(
+    std::declval<Left>() == std::declval<Right>()
+    );
+
+  //
+
+  template <typename Type, typename Result>
+  concept c_makable_from = requires(
+    t_reference< const std::remove_reference_t<Type> > pc_ref,
+    t_right_ref< std::remove_reference_t<Type> > pr_ref
+    )
+  {
+    static_cast<Result>(pc_ref);
+    static_cast<Result>( std::move(pr_ref) );
   };
 
-  template <typename Type>
-  concept c_bool_comparable_equal_both =
-    c_bool_comparable_equal<Type> &&
-    c_bool_comparable_not_equal<Type>;
+  template <typename Type, typename Result>
+  concept c_comparable_equal_is =
+    c_comparable_equal_with<Type, Type> &&
+    std::is_same_v<u_result_of_compare_equal<Type>, Result>;
+
+  template <typename Type, typename Result>
+  concept c_comparable_equal_as =
+    c_comparable_equal_with<Type, Type> &&
+    c_makable_from<Result, u_result_of_compare_equal<Type> >;
 
   //
 

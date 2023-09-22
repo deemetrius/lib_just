@@ -51,5 +51,8 @@
     <ClCompile Include="..\src_just\just.span.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src_just\just.type_handling.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

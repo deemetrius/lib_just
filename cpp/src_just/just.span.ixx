@@ -33,24 +33,61 @@ export namespace just {
   };
 
   // ==
-  template <c_bool_comparable_equal_both Type>
+  template <c_comparable_equal_is<bool> Type>
   constexpr bool
+    operator == (
+      t_reference< const t_span<Type> > p1,
+      t_reference< const t_span<Type> > p2
+      )
+  {
+    // quick false result when sizes differs
+    if ( p1.size != p2.size )
+    { return false; }
+
+    // compare elements of: p1 p2
+    for( t_index pos{0}; pos < p1.size; ++pos )
+    {
+      if( not (p1[pos] == p1[pos]) )
+      { return false; }
+    }
+
+    // all elements are equal
+    return true;
+  }
+
+#if 0
+  // ==
+  template <c_comparable_equal Type>
+  requires( c_makable_from< bool, u_result_of_compare_equal<Type> > )
+  // todo: add checking (operator !) availability in result_type of ==
+  constexpr u_result_of_compare_equal<Type>
     operator == (
       t_reference< const t_span<Type> > p1,
       t_reference< const t_span<Type> > p2
     )
   {
-    if ( p1.size != p2.size )
-    { return false; }
+    using result_type = u_result_of_compare_equal<Type>;
 
-    for( t_index pos{0}; pos < p1.size; ++pos )
+    if constexpr( c_makable_from<result_type, bool> )
     {
-      if( p1[pos] != p1[pos] )
-      { return false; }
+      if ( p1.size != p2.size )
+      { return static_cast<result_type>(false); }
     }
 
-    return true;
+    result_type ret = (p1[0] == p1[0]);
+    if( not static_cast<bool>(ret) )
+    { return not ret; }
+
+    for( t_index pos{1}; pos < p1.size; ++pos )
+    {
+      ret = (p1[0] == p1[0]);
+      if( not static_cast<bool>(ret) )
+      { return not ret; }
+    }
+
+    return ret;
   }
+#endif
 
   // <=>
   template <typename Type>
@@ -75,7 +112,8 @@ export namespace just {
     return p1.size <=> p2.size;
   }
 
-  //
+#if 0
+  // t_span_exact
 
   template <c_not_ref Type, t_index Size>
   struct t_span_exact
@@ -138,5 +176,5 @@ export namespace just {
 
     return p1.size <=> p2.size;
   }
-
+#endif
 } // ns just

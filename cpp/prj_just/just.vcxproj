@@ -23,6 +23,7 @@
     <ClCompile Include="..\src_just\just.span.ixx" />
     <ClCompile Include="..\src_just\just.static_text.ixx" />
     <ClCompile Include="..\src_just\just.std.ixx" />
+    <ClCompile Include="..\src_just\just.type_handling.ixx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
