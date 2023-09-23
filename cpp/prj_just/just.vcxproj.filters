@@ -54,5 +54,14 @@
     <ClCompile Include="..\src_just\just.type_handling.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\src_just\just.conversion.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src_just\just.iteration.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src_just\just.aux.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

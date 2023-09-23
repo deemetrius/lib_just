@@ -2,6 +2,7 @@
 export module just.cross_memory;
 
 export import just.errors;
+export import just.aux;
 export import <new>;
 export import <utility>;
 

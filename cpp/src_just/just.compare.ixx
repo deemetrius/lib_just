@@ -2,6 +2,7 @@
 export module just.compare;
 
 export import just.std;
+export import just.conversion;
 export import <compare>;
 
 export namespace just {

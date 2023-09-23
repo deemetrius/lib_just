@@ -1,7 +1,8 @@
 
 export module just.span;
 
-export import just.std;
+export import just.aux;
+export import just.type_hadling;
 export import <compare>;
 
 export namespace just {
@@ -17,23 +18,42 @@ export namespace just {
     using size_type = t_index;
     using pointer = t_pointer<value_type>;
     using reference = t_reference<value_type>;
-    using const_reference = t_reference<const value_type>;
 
     // data
     pointer
-      data{};
+      handle{};
     size_type
       size{};
 
-    constexpr reference operator [] (size_type pos)
-    { return data[pos]; }
+    constexpr reference operator [] (size_type pos) const
+    { return this->handle[pos]; }
 
-    constexpr const_reference operator [] (size_type pos) const
-    { return data[pos]; }
-  };
+    // subspan()
+
+    constexpr t_span
+      subspan(size_type p_offset) const
+    { return {this->handle + p_offset, this->size - p_offset}; }
+
+    // negative p_offset is UB
+    constexpr t_span
+      subspan(size_type p_offset, size_type p_count) const
+    {
+      if( p_count <= 0 ) { p_count += this->size - p_offset; }
+      return {this->handle + p_offset, p_count};
+    }
+
+    template <size_type Offset, size_type Count = 0>
+    requires( Offset >= 0 )
+    constexpr t_span
+      subspan() const
+    {
+      size_type v_count = (Count <= 0 ? (Count + this->size - Offset) : Count);
+      return {this->handle + Offset, v_count};
+    }
+  }; // t_span
 
   // ==
-  template <c_comparable_equal_is<bool> Type>
+  template <c_comparable_equal_resulted_is<bool> Type>
   constexpr bool
     operator == (
       t_reference< const t_span<Type> > p1,
@@ -58,17 +78,17 @@ export namespace just {
 #if 0
   // ==
   template <c_comparable_equal Type>
-  requires( c_makable_from< bool, u_result_of_compare_equal<Type> > )
+  requires( c_convertible_from< bool, t_result_of_compare_equal<Type> > )
   // todo: add checking (operator !) availability in result_type of ==
-  constexpr u_result_of_compare_equal<Type>
+  constexpr t_result_of_compare_equal<Type>
     operator == (
       t_reference< const t_span<Type> > p1,
       t_reference< const t_span<Type> > p2
     )
   {
-    using result_type = u_result_of_compare_equal<Type>;
+    using result_type = t_result_of_compare_equal<Type>;
 
-    if constexpr( c_makable_from<result_type, bool> )
+    if constexpr( c_convertible_from<result_type, bool> )
     {
       if ( p1.size != p2.size )
       { return static_cast<result_type>(false); }
