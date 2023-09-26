@@ -132,7 +132,7 @@ export namespace just {
 
     // ""_st
     template <t_static_text S>
-    consteval auto
+    constexpr auto
       operator "" _st ()
     { return S; }
 

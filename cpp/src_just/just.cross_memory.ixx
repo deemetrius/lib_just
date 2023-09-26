@@ -8,16 +8,12 @@ export import <utility>;
 
 export namespace just {
 
-  struct nest_cross_memory
+  struct nest_cross_memory : public nest
   {
-    ~nest_cross_memory() = delete; // only nest
-
   private:
 
-    struct nest_hidden
+    struct nest_hidden : public nest
     {
-      ~nest_hidden() = delete; // only nest
-
       enum class t_status : bool { n_ready = false, n_unready = true };
 
       using t_void_pointer = t_pointer<void>;

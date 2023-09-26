@@ -66,4 +66,15 @@ export namespace just {
   template <typename Type>
   concept c_allocatable = c_simple<Type> and (not std::is_abstract_v<Type>);
 
+  //
+
+  struct no_instance
+  {
+    no_instance() = delete;
+    no_instance(const no_instance &) = delete;
+    no_instance(no_instance &&) = delete;
+  };
+
+  struct nest { private: no_instance only_nest; };
+
 } // ns just

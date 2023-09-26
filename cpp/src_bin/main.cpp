@@ -3,11 +3,46 @@
 import just.enum_info;
 import <iostream>;
 
+struct t_actions_span
+{
+  template <typename Self, typename Result = std::remove_cvref_t<Self> >
+  constexpr Result
+    subspan(this Self && p_self, Result::size_type p_offset)
+  { return {p_self.handle + p_offset, p_self.size - p_offset}; }
+};
+
+template <just::c_not_ref Type>
+struct t_data_span
+{
+  using value_type = Type;
+  using size_type = just::t_index;
+  using pointer = just::t_pointer<value_type>;
+  using reference = just::t_reference<value_type>;
+
+  // data
+  pointer
+    handle{};
+  size_type
+    size{};
+
+  constexpr reference operator [] (size_type pos) const
+  { return this->handle[pos]; }
+}; // t_span
+
+template <just::c_not_ref Type>
+struct t_span
+  : public t_data_span<Type>
+  , public t_actions_span
+{
+  template <typename Other>
+  using rebind = t_span<Other>;
+}; // t_span
+
 //using namespace just::literals_static_text;
 
 enum class t_align_horz { n_left, n_center, n_right };
 
-struct nest_align_horz
+struct nest_align_horz : public just::nest
 {
   using enum_type = t_align_horz;
   using nest = just::nest_enum_info<enum_type, just::t_text>;
@@ -24,6 +59,10 @@ struct nest_align_horz
 int main()
 {
   using namespace just::literals_static_text;
+  t_span<const char> sp{"123"_st.data, 3}, sp2 = sp.subspan(1);
+  std::cout
+    << sp2.handle << '\n'
+    << sizeof(t_span<char>) << ' ' << sizeof(just::t_span<char>) << '\n';
   static constexpr bool b{ "123"_st.span() == "123"_st.span()};
   std::cout
     << b << '\n'

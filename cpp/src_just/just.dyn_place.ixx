@@ -12,9 +12,9 @@ export namespace just {
   struct nest_dynamic_space
     final
     : protected Memory_nest
-  {
-    ~nest_dynamic_space() = delete; // nest
+    , nest
 
+  {
     using memory_type = Memory_nest;
 
     static constexpr inline bool

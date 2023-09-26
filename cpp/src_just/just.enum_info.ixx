@@ -23,10 +23,8 @@ export namespace just {
       aliases;
   };
 
-  struct nest_conversion_map
+  struct nest_conversion_map : public nest
   {
-    ~nest_conversion_map() = delete; // only nest
-
     template <
       typename Value,
       typename Target,
@@ -75,10 +73,8 @@ export namespace just {
     typename Projection = std::identity,
     typename Storage_nest = nest_conversion_map
   >
-  struct nest_enum_info
+  struct nest_enum_info : public nest
   {
-    ~nest_enum_info() = delete; // only nest
-
     using value_type = Enum;
     using text_type = Text;
     using text_view_type = std::basic_string_view<typename text_type::value_type>;
