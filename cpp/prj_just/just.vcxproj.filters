@@ -36,13 +36,13 @@
     <ClCompile Include="..\src_just\just.agent_exception.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src_just\just.static_text.ixx">
+    <ClCompile Include="..\src_just\just.text.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src_just\just.enum_info.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src_just\just.array.ixx">
+    <ClCompile Include="..\src_just\just.array_exact.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src_just\just.compare.ixx">
@@ -61,6 +61,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\src_just\just.aux.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src_just\just.ui.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src_just\just.string.ixx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src_just\just.variadic.ixx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

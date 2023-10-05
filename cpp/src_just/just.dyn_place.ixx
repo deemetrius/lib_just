@@ -1,7 +1,7 @@
 
 export module just.dyn_place;
 
-export import just.std;
+export import just.type_hadling;
 import <utility>;
 
 export namespace just {
@@ -27,8 +27,8 @@ export namespace just {
       final
     {
       using value_type = Type;
-      using pointer = t_pointer<value_type>;
-      using reference = t_reference<value_type>;
+      using pointer = pointer_to<value_type>;
+      using reference = ref_to<value_type>;
 
     private:
 
@@ -44,8 +44,8 @@ export namespace just {
         requires( not s_leak )
       { reset(); }
 
-      t_single(t_reference<const t_self>) = delete; // no copy
-      t_reference<t_self> operator = (t_reference<const t_self>) = delete; // no copy assign
+      t_single(ref_to<const t_self>) = delete; // no copy
+      ref_to<t_self> operator = (ref_to<const t_self>) = delete; // no copy assign
 
       t_single() noexcept
         : m_handle{memory_type::template allocate_single<value_type>()}
@@ -60,13 +60,13 @@ export namespace just {
       {}
 
       // move
-      t_single(t_right_ref<t_self> p_other) noexcept :
+      t_single(right_ref_to<t_self> p_other) noexcept :
         m_handle{ std::exchange(p_other.m_handle, nullptr) }
       {}
 
       // move assign
-      t_reference<t_self>
-        operator = (t_right_ref<t_self> p_other) noexcept
+      ref_to<t_self>
+        operator = (right_ref_to<t_self> p_other) noexcept
       {
         memory_type::deallocate(std::exchange(
           m_handle, std::exchange(p_other.m_handle, nullptr)
@@ -91,7 +91,7 @@ export namespace just {
 
     }; // t_single
 
-    // fixed size space
+    // fixed t_size space
 
     template <c_allocatable Type, t_index N>
       requires( N > 0 )
@@ -99,15 +99,15 @@ export namespace just {
       final
     {
       using value_type = Type;
-      using pointer = t_pointer<value_type>;
-      using reference = t_reference<value_type>;
+      using pointer = pointer_to<value_type>;
+      using reference = ref_to<value_type>;
       using size_type = decltype(N);
 
       static constexpr inline const size_type
         s_count = N;
 
       static constexpr inline size_type
-        size()
+        t_size()
       { return s_count; }
 
     private:
@@ -124,8 +124,8 @@ export namespace just {
         requires( not s_leak )
       { reset(); }
 
-      t_multiple_exact(t_reference<const t_self>) = delete; // no copy
-      t_reference<t_self> operator = (t_reference<const t_self>) = delete; // no copy assign
+      t_multiple_exact(ref_to<const t_self>) = delete; // no copy
+      ref_to<t_self> operator = (ref_to<const t_self>) = delete; // no copy assign
 
       t_multiple_exact()
         : m_handle{memory_type::template allocate_multiple<value_type>(s_count)}
@@ -142,13 +142,13 @@ export namespace just {
       {}
 
       // move
-      t_multiple_exact(t_right_ref<t_self> p_other) noexcept :
+      t_multiple_exact(right_ref_to<t_self> p_other) noexcept :
         m_handle{ std::exchange(p_other.m_handle, nullptr) }
       {}
 
       // move assign
-      t_reference<t_self>
-        operator = (t_right_ref<t_self> p_other) noexcept
+      ref_to<t_self>
+        operator = (right_ref_to<t_self> p_other) noexcept
       {
         memory_type::deallocate(std::exchange(
           m_handle, std::exchange(p_other.m_handle, nullptr)
@@ -176,8 +176,8 @@ export namespace just {
       final
     {
       using value_type = Type;
-      using pointer = t_pointer<value_type>;
-      using reference = t_reference<value_type>;
+      using pointer = pointer_to<value_type>;
+      using reference = ref_to<value_type>;
       using size_type = t_index;
 
     private:
@@ -188,7 +188,7 @@ export namespace just {
         pointer
           handle{};
         size_type
-          size{};
+          t_size{};
       };
 
       // data
@@ -203,15 +203,15 @@ export namespace just {
         requires( not s_leak )
       { reset(); }
 
-      t_multiple(t_reference<const t_self>) = delete; // no copy
-      t_reference<t_self> operator = (t_reference<const t_self>) = delete; // no copy assign
+      t_multiple(ref_to<const t_self>) = delete; // no copy
+      ref_to<t_self> operator = (ref_to<const t_self>) = delete; // no copy assign
 
       t_multiple() = default;
 
       t_multiple(size_type p_size)
         : m_data{memory_type::template allocate_multiple<value_type>(p_size)}
       {
-        if( m_data.handle != nullptr ) { m_data.size = p_size; }
+        if( m_data.handle != nullptr ) { m_data.t_size = p_size; }
       }
 
       template <typename Agent>
@@ -223,16 +223,16 @@ export namespace just {
         : m_data{memory_type::template allocate_multiple<value_type>(
           p_size, p_agent, p_source
         )}
-      { m_data.size = p_size; }
+      { m_data.t_size = p_size; }
 
       // move
-      t_multiple(t_right_ref<t_self> p_other) noexcept :
+      t_multiple(right_ref_to<t_self> p_other) noexcept :
         m_data{ std::exchange(p_other.m_data, {}) }
       {}
 
       // move assign
-      t_reference<t_self>
-        operator = (t_right_ref<t_self> p_other) noexcept
+      ref_to<t_self>
+        operator = (right_ref_to<t_self> p_other) noexcept
       {
         memory_type::deallocate(std::exchange(
           m_data, std::exchange(p_other.m_data, {})
@@ -240,8 +240,8 @@ export namespace just {
       }
 
       inline size_type
-        size() const
-      { return m_data.size; }
+        t_size() const
+      { return m_data.t_size; }
 
       void
         reset() noexcept

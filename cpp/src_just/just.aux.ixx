@@ -1,7 +1,7 @@
 
 export module just.aux;
 
-export import just.std;
+export import just.type_hadling;
 
 export namespace just {
 

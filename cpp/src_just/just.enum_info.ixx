@@ -1,13 +1,13 @@
 
 export module just.enum_info;
 
-export import just.static_text;
+export import just.text;
 export import <functional>;
 export import <map>;
 
 export namespace just {
 
-  template <typename Enum, typename Text, typename Aliases>
+  template <c_enum Enum, typename Text, typename Aliases>
   struct t_enum_info
   {
     using value_type = Enum;
@@ -91,7 +91,7 @@ export namespace just {
         name;
     };
 
-    template <t_static_text ... Names>
+    template <text ... Names>
       requires( sizeof...(Names) > 0 )
     struct t_alias
     {
@@ -101,11 +101,11 @@ export namespace just {
       }
     };
 
-    template <value_type Value, t_static_text Name, typename Alias>
+    template <value_type Value, text Name, typename Alias>
     struct t_element
     {
       //static inline const t_item
-      //  s_item{ Value, {Name.data, Name.size} };
+      //  s_item{ Value, {Name.data, Name.t_size} };
 
       static void add(storage_type & storage, projection_type proj)
       {
@@ -127,7 +127,7 @@ export namespace just {
         ( Items::add(this->storage, proj), ... );
       }
 
-      t_pointer<storage_type> operator -> ()
+      pointer_to<storage_type> operator -> ()
       { return &storage; }
     };
   }; // nest_enum_info

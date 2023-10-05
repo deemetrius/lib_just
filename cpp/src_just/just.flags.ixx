@@ -134,22 +134,22 @@ export namespace just {
 
     // bitwise assign
 
-    constexpr t_reference<t_flags>
-      operator |= (t_reference<const t_flags> p)
+    constexpr ref_to<t_flags>
+      operator |= (ref_to<const t_flags> p)
     {
       value |= p.value;
       return *this;
     }
 
-    constexpr t_reference<t_flags>
-      operator &= (t_reference<const t_flags> p)
+    constexpr ref_to<t_flags>
+      operator &= (ref_to<const t_flags> p)
     {
       value &= p.value;
       return *this;
     }
 
-    constexpr t_reference<t_flags>
-      operator ^= (t_reference<const t_flags> p)
+    constexpr ref_to<t_flags>
+      operator ^= (ref_to<const t_flags> p)
     {
       value ^= p.value;
       return *this;
@@ -158,24 +158,24 @@ export namespace just {
     // bitwise
 
     friend constexpr t_flags
-      operator | (t_reference<const t_flags> p1, t_reference<const t_flags> p2)
+      operator | (ref_to<const t_flags> p1, ref_to<const t_flags> p2)
     { return {p1.value | p2.value}; }
 
     friend constexpr t_flags
-      operator & (t_reference<const t_flags> p1, t_reference<const t_flags> p2)
+      operator & (ref_to<const t_flags> p1, ref_to<const t_flags> p2)
     { return {p1.value & p2.value}; }
 
     friend constexpr t_flags
-      operator ^ (t_reference<const t_flags> p1, t_reference<const t_flags> p2)
+      operator ^ (ref_to<const t_flags> p1, ref_to<const t_flags> p2)
     { return {p1.value ^ p2.value}; }
 
     // comparison
 
     friend constexpr bool
-      operator == (t_reference<const t_flags>, t_reference<const t_flags>) = default;
+      operator == (ref_to<const t_flags>, ref_to<const t_flags>) = default;
 
     friend constexpr std::strong_ordering
-      operator <=> (t_reference<const t_flags>, t_reference<const t_flags>) = default;
+      operator <=> (ref_to<const t_flags>, ref_to<const t_flags>) = default;
   };
 
   template <auto First, decltype(First) ... Rest>

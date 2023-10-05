@@ -1,6 +1,8 @@
 
 #if 1
 import just.enum_info;
+import just.span;
+import just.string;
 import <iostream>;
 
 struct t_actions_span
@@ -8,7 +10,7 @@ struct t_actions_span
   template <typename Self, typename Result = std::remove_cvref_t<Self> >
   constexpr Result
     subspan(this Self && p_self, Result::size_type p_offset)
-  { return {p_self.handle + p_offset, p_self.size - p_offset}; }
+  { return {p_self.handle + p_offset, p_self.t_size - p_offset}; }
 };
 
 template <just::c_not_ref Type>
@@ -16,14 +18,14 @@ struct t_data_span
 {
   using value_type = Type;
   using size_type = just::t_index;
-  using pointer = just::t_pointer<value_type>;
-  using reference = just::t_reference<value_type>;
+  using pointer = just::pointer_to<value_type>;
+  using reference = just::ref_to<value_type>;
 
   // data
   pointer
     handle{};
   size_type
-    size{};
+    t_size{};
 
   constexpr reference operator [] (size_type pos) const
   { return this->handle[pos]; }
@@ -38,14 +40,14 @@ struct t_span
   using rebind = t_span<Other>;
 }; // t_span
 
-//using namespace just::literals_static_text;
+//using namespace just::literals_text;
 
 enum class t_align_horz { n_left, n_center, n_right };
 
 struct nest_align_horz : public just::nest
 {
   using enum_type = t_align_horz;
-  using nest = just::nest_enum_info<enum_type, just::t_text>;
+  using nest = just::nest_enum_info<enum_type, just::string>;
   using info_type = nest::t_info<
     nest::t_element<enum_type::n_left  , "Left"  , nest::t_alias<"left"  , "align-left"  > >,
     nest::t_element<enum_type::n_center, "Center", nest::t_alias<"center", "align-center"> >,
@@ -58,14 +60,14 @@ struct nest_align_horz : public just::nest
 
 int main()
 {
-  using namespace just::literals_static_text;
-  t_span<const char> sp{"123"_st.data, 3}, sp2 = sp.subspan(1);
+  using namespace just::literals_text;
+  t_span<const char> sp{"123"_jt.data, 3}, sp2 = sp.subspan(1);
   std::cout
     << sp2.handle << '\n'
     << sizeof(t_span<char>) << ' ' << sizeof(just::t_span<char>) << '\n';
-  static constexpr bool b{ "123"_st.span() == "123"_st.span()};
+  //static constexpr bool b{ "123"_jt.span() == "123"_jt.span()};
   std::cout
-    << b << '\n'
+    //<< b << '\n'
     << nest_align_horz::s_info->to_target(t_align_horz::n_left) << '\n'
     << std::to_underlying( nest_align_horz::s_info->to_value("align-left") ) << '\n'
   ;
@@ -77,14 +79,14 @@ int main()
 
 #if 0
 
-import just.static_text;
+import just.text;
 import <iostream>;
 
 int main()
 {
-  constexpr static just::t_static_text
+  constexpr static just::text
     res1{just::static_concat<"1", "22", "333">()};
-  constexpr static just::t_static_text
+  constexpr static just::text
     res2{just::static_concat_separated<":", "1", "22", "333">()};
   std::cout << res1.data << ' ' << res1.length << '\n';
   std::cout << res2.data << ' ' << res2.length << '\n';
@@ -226,15 +228,15 @@ int main() {
     std::cout << typeid(t_multiple).name() << '\n';
   } catch( const just::t_error_allocate & e ) {
     std::cout
-      << "catch " << e.source
+      << "catch " << e.location
       << '\n' << e.target_type->name
       << '\n' << e.count
       << '\n';
   } catch( ... ) {
     std::cout << "catch ...\n";
   }
-  using namespace just::literals_static_text;
-  just::t_static_text vt{"hello"_st};
+  using namespace just::literals_text;
+  just::text vt{"hello"_st};
   std::cout << typeid(decltype(vt)::size_type).name() << '\n';
 #if 0
   bool b;

@@ -6,11 +6,30 @@ import <type_traits>;
 
 export namespace just {
 
+  template <typename Type, typename Result>
+  concept c_convertible_from = requires
+  {
+    static_cast<Result>( std::declval<Type>() );
+  };
+
+  template <typename Type>
+  concept c_simple = not (
+    std::is_reference_v<Type> or
+    std::is_unbounded_array_v<Type> or
+    std::is_function_v<Type>
+    );
+
+  template <typename Type>
+  concept c_scalar = std::is_scalar_v<Type>;
+
+  template <typename Type>
+  concept c_allocatable = c_simple<Type> and (not std::is_abstract_v<Type>);
+
   // c_comparable_equal_with
   template <typename Left, typename Right>
   concept c_comparable_equal_with = requires(
-    t_reference< const std::remove_reference_t<Left> > p_left,
-    t_reference< const std::remove_reference_t<Right> > p_right
+    ref_to< const std::remove_reference_t<Left> > p_left,
+    ref_to< const std::remove_reference_t<Right> > p_right
     )
   { (p_left == p_right); };
 

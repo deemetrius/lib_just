@@ -13,7 +13,7 @@
   <ItemGroup>
     <ClCompile Include="..\src_bin\main.cpp" />
     <ClCompile Include="..\src_just\just.agent_exception.ixx" />
-    <ClCompile Include="..\src_just\just.array.ixx" />
+    <ClCompile Include="..\src_just\just.array_exact.ixx" />
     <ClCompile Include="..\src_just\just.aux.ixx" />
     <ClCompile Include="..\src_just\just.compare.ixx" />
     <ClCompile Include="..\src_just\just.conversion.ixx" />
@@ -24,9 +24,12 @@
     <ClCompile Include="..\src_just\just.cross_memory.ixx" />
     <ClCompile Include="..\src_just\just.iteration.ixx" />
     <ClCompile Include="..\src_just\just.span.ixx" />
-    <ClCompile Include="..\src_just\just.static_text.ixx" />
+    <ClCompile Include="..\src_just\just.text.ixx" />
     <ClCompile Include="..\src_just\just.std.ixx" />
+    <ClCompile Include="..\src_just\just.string.ixx" />
     <ClCompile Include="..\src_just\just.type_handling.ixx" />
+    <ClCompile Include="..\src_just\just.ui.ixx" />
+    <ClCompile Include="..\src_just\just.variadic.ixx" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

@@ -33,7 +33,7 @@ export namespace just {
       operator -> ()
     { return m_current; }
 
-    t_reference<t_iterator>
+    ref_to<t_iterator>
       operator ++ ()
     {
       if constexpr( s_direction == t_direction::n_forward )
@@ -41,7 +41,7 @@ export namespace just {
       return *this;
     }
 
-    t_reference<t_iterator>
+    ref_to<t_iterator>
       operator -- ()
     {
       if constexpr( s_direction == t_direction::n_forward )
@@ -49,7 +49,7 @@ export namespace just {
       return *this;
     }
 
-    t_reference<t_iterator>
+    ref_to<t_iterator>
       operator += (difference_type p_delta)
     {
       if constexpr( s_direction == t_direction::n_forward )
@@ -57,7 +57,7 @@ export namespace just {
       return *this;
     }
 
-    t_reference<t_iterator>
+    ref_to<t_iterator>
       operator -= (difference_type p_delta)
     {
       if constexpr( s_direction == t_direction::n_forward )
@@ -66,7 +66,7 @@ export namespace just {
     }
 
     friend t_iterator
-      operator + (t_reference<const t_iterator> p, difference_type p_delta)
+      operator + (ref_to<const t_iterator> p, difference_type p_delta)
     {
       if constexpr( s_direction == t_direction::n_forward )
       { return {p.m_current + p_delta, p.m_end}; } else
@@ -74,7 +74,7 @@ export namespace just {
     }
 
     friend t_iterator
-      operator - (t_reference<const t_iterator> p, difference_type p_delta)
+      operator - (ref_to<const t_iterator> p, difference_type p_delta)
     {
       if constexpr( s_direction == t_direction::n_forward )
       { return {p.m_current - p_delta, p.m_end}; } else
@@ -83,19 +83,19 @@ export namespace just {
 
     friend bool
       operator == (
-        t_reference<const t_iterator> p1,
-        t_reference<const t_iterator> p2
+        ref_to<const t_iterator> p1,
+        ref_to<const t_iterator> p2
         )
     { return p1.m_current == p2.m_current; }
 
     friend bool
-      operator == (t_reference<const t_iterator> p, sentinel_type)
+      operator == (ref_to<const t_iterator> p, sentinel_type)
     { return p.m_current == p.m_end; }
 
     friend std::strong_ordering
       operator <=> (
-        t_reference<const t_iterator> p1,
-        t_reference<const t_iterator> p2
+        ref_to<const t_iterator> p1,
+        ref_to<const t_iterator> p2
         )
     {
       if constexpr( s_direction == t_direction::n_forward )
@@ -104,7 +104,7 @@ export namespace just {
     }
 
     friend std::strong_ordering
-      operator <=> (t_reference<const t_iterator> p, sentinel_type)
+      operator <=> (ref_to<const t_iterator> p, sentinel_type)
     {
       if constexpr( s_direction == t_direction::n_forward )
       { return p.m_current <=> p.m_end; } else

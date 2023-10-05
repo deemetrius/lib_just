@@ -20,7 +20,7 @@ export namespace just {
 
   // conversion
   template <>
-  struct t_cast<t_compare>
+  struct cast_functor<t_compare>
   {
     using result_type = t_compare;
 
@@ -51,7 +51,7 @@ export namespace just {
   };
 
   // global object
-  constexpr inline t_cast<t_compare>
+  constexpr inline cast_functor<t_compare>
     as_compare{};
 
   // operator ==

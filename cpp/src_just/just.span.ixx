@@ -16,14 +16,14 @@ export namespace just {
   {
     using value_type = Type;
     using size_type = t_index;
-    using pointer = t_pointer<value_type>;
-    using reference = t_reference<value_type>;
+    using pointer = pointer_to<value_type>;
+    using reference = ref_to<value_type>;
 
     // data
     pointer
       handle{};
     size_type
-      size{};
+      t_size{};
 
     constexpr reference operator [] (size_type pos) const
     { return this->handle[pos]; }
@@ -32,13 +32,13 @@ export namespace just {
 
     constexpr t_span
       subspan(size_type p_offset) const
-    { return {this->handle + p_offset, this->size - p_offset}; }
+    { return {this->handle + p_offset, this->t_size - p_offset}; }
 
     // negative p_offset is UB
     constexpr t_span
       subspan(size_type p_offset, size_type p_count) const
     {
-      if( p_count <= 0 ) { p_count += this->size - p_offset; }
+      if( p_count <= 0 ) { p_count += this->t_size - p_offset; }
       return {this->handle + p_offset, p_count};
     }
 
@@ -47,7 +47,7 @@ export namespace just {
     constexpr t_span
       subspan() const
     {
-      size_type v_count = (Count <= 0 ? (Count + this->size - Offset) : Count);
+      size_type v_count = (Count <= 0 ? (Count + this->t_size - Offset) : Count);
       return {this->handle + Offset, v_count};
     }
   }; // t_span
@@ -56,16 +56,16 @@ export namespace just {
   template <c_comparable_equal_resulted_is<bool> Type>
   constexpr bool
     operator == (
-      t_reference< const t_span<Type> > p1,
-      t_reference< const t_span<Type> > p2
+      ref_to< const t_span<Type> > p1,
+      ref_to< const t_span<Type> > p2
       )
   {
     // quick false result when sizes differs
-    if ( p1.size != p2.size )
+    if ( p1.t_size != p2.t_size )
     { return false; }
 
     // compare elements of: p1 p2
-    for( t_index pos{0}; pos < p1.size; ++pos )
+    for( t_index pos{0}; pos < p1.t_size; ++pos )
     {
       if( not (p1[pos] == p1[pos]) )
       { return false; }
@@ -82,15 +82,15 @@ export namespace just {
   // todo: add checking (operator !) availability in result_type of ==
   constexpr t_result_of_compare_equal<Type>
     operator == (
-      t_reference< const t_span<Type> > p1,
-      t_reference< const t_span<Type> > p2
+      ref_to< const t_span<Type> > p1,
+      ref_to< const t_span<Type> > p2
     )
   {
     using result_type = t_result_of_compare_equal<Type>;
 
     if constexpr( c_convertible_from<result_type, bool> )
     {
-      if ( p1.size != p2.size )
+      if ( p1.t_size != p2.t_size )
       { return static_cast<result_type>(false); }
     }
 
@@ -98,7 +98,7 @@ export namespace just {
     if( not static_cast<bool>(ret) )
     { return not ret; }
 
-    for( t_index pos{1}; pos < p1.size; ++pos )
+    for( t_index pos{1}; pos < p1.t_size; ++pos )
     {
       ret = (p1[0] == p1[0]);
       if( not static_cast<bool>(ret) )
@@ -113,14 +113,14 @@ export namespace just {
   template <typename Type>
   constexpr auto
     operator <=> (
-      t_reference< const t_span<Type> > p1,
-      t_reference< const t_span<Type> > p2
+      ref_to< const t_span<Type> > p1,
+      ref_to< const t_span<Type> > p2
     ) -> std::compare_three_way_result_t<Type>
     requires( not std::is_same_v<std::compare_three_way_result_t<Type>, void> )
   {
     using result_type = std::compare_three_way_result_t<Type>;
 
-    t_index min_size = aux::min(p1.size, p2.size);
+    t_index min_size = aux::min(p1.t_size, p2.t_size);
 
     for( t_index pos{0}; pos < min_size; ++pos )
     {
@@ -129,7 +129,7 @@ export namespace just {
       { return res; }
     }
 
-    return p1.size <=> p2.size;
+    return p1.t_size <=> p2.t_size;
   }
 
 #if 0
@@ -140,11 +140,11 @@ export namespace just {
   {
     using value_type = Type;
     using size_type = decltype(Size);
-    using pointer = t_pointer<value_type>;
-    using reference = t_reference<value_type>;
+    using pointer = pointer_to<value_type>;
+    using reference = ref_to<value_type>;
 
     static constexpr inline const size_type
-      size{Size};
+      t_size{Size};
 
     // data
     pointer
@@ -158,8 +158,8 @@ export namespace just {
   template <c_bool_comparable_equal_both Type, t_index Size_1, t_index Size_2>
   constexpr bool
     operator == (
-      t_reference< const t_span_exact<Type, Size_1> > p1,
-      t_reference< const t_span_exact<Type, Size_2> > p2
+      ref_to< const t_span_exact<Type, Size_1> > p1,
+      ref_to< const t_span_exact<Type, Size_2> > p2
     )
   {
     if constexpr( Size_1 != Size_2 )
@@ -178,8 +178,8 @@ export namespace just {
   template <typename Type, t_index Size_1, t_index Size_2>
   constexpr auto
     operator <=> (
-      t_reference< const t_span_exact<Type, Size_1> > p1,
-      t_reference< const t_span_exact<Type, Size_2> > p2
+      ref_to< const t_span_exact<Type, Size_1> > p1,
+      ref_to< const t_span_exact<Type, Size_2> > p2
     ) -> std::compare_three_way_result_t<Type>
     requires( not std::is_same_v<std::compare_three_way_result_t<Type>, void> )
   {
@@ -194,7 +194,7 @@ export namespace just {
       { return res; }
     }
 
-    return p1.size <=> p2.size;
+    return p1.t_size <=> p2.t_size;
   }
 #endif
 } // ns just

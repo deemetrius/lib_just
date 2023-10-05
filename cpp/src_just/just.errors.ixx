@@ -2,6 +2,7 @@
 export module just.errors;
 
 export import just.std;
+export import just.string;
 export import <concepts>;
 export import <utility>;
 export import <typeinfo>;
@@ -12,7 +13,7 @@ export namespace just {
   {
     // data
     t_source
-      source{t_source::current()};
+      location{t_source::current()};
   };
 
   // out of range
@@ -41,14 +42,14 @@ export namespace just {
 
   struct t_type_info
   {
-    using const_pointer = t_pointer<const t_type_info>;
+    using const_pointer = pointer_to<const t_type_info>;
 
     // data
     t_align_of
       align{};
     t_size
       size{};
-    t_text
+    string
       name{};
   };
 
