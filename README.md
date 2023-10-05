@@ -1,8 +1,8 @@
 # lib_just
 cpp library allows:
-* compile time string as template parameter
-  * constexpr static_concat()
-  * constexpr static_concat_separated()
+* compile time text as template parameter
+  * constexpr concat<>()
+  * constexpr concat_separated<>()
 * enum information definition
   * for converting to/from string
   * // WIP
